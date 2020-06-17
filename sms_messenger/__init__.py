@@ -27,7 +27,7 @@ class messageManager:
         'MetroPCS': 'mymetropcs.com',
         'Republic Wireless': 'text.republicwireless.com',
         'Sprint': 'messaging.sprintpcs.com',
-        'T-Mobile': 'messaging.sprintpcs.com',
+        'T-Mobile': 'tmomail.net',
         'U.S. Cellular': 'email.uscc.net',
         'Verizon Wireless': 'vtext.com',
         'Virgin Mobile': 'vmobl.com',
