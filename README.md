@@ -8,8 +8,8 @@ SMS Messenger is a simple Python package that enables the user to send and read 
 
 ## Dependencies
 
-[imapclient](https://github.com/mjs/imapclient)
-[pyzmail](https://github.com/aspineux/pyzmail)
+[imapclient](https://github.com/mjs/imapclient)  
+[pyzmail](https://github.com/aspineux/pyzmail)  
 An Email _Preferably Gmail_
 
 ## Features
@@ -48,7 +48,7 @@ print(messages)
 ## Help
 
 __If using gmail, look under the [security tab](https://myaccount.google.com/security?gar=1) and turn ON Less secure app access.
-![example](/img/example.png)
+![example](/img/example.png)  
 It must be on for the package to work.__
 
 ## Docstring
