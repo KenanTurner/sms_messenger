@@ -41,7 +41,7 @@ server.sendTextMessage("Hello World!",addresses)
 
 server.semdTextMessage("This is the Body",'tmpEmail@email.com','This is the subject') #works with emails too
 
-messages = server.getTextMessages(addresses) #needs an address
+messages = server.getTextMessages('+12003004000@tmomail.net') #needs an address
 print(messages)
 ```
 
