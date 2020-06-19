@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sms_messenger", # Replace with your own username
-    version="1.0.2",
+    version="1.1.0",
     author="Kenan Turner",
     author_email="coolspykee@satx.rr.com",
     license='MIT',
