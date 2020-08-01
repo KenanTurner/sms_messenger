@@ -140,6 +140,30 @@ class messageManager:
                     payload, used_charset=pyzmail.decode_text(mailpart.get_payload(), mailpart.charset, None)
                     messages.append(payload)
         return dict(zip(UIDs,messages))
+    
+    def getAddressesFromUIDs(self,UIDs,folder,readOnly=False):
+        """Returns the addresses from specified UIDs. 
+        
+        Args:
+            UIDs: List of UIDs
+            folder: folder from which the UIDs came
+            readOnly: (optional) Whether or not to mark the messages as read.
+        
+        Returns:
+            a dictionary containing the UID and address as a pair.
+            
+        """
+        #initialize the server
+        server = imapclient.IMAPClient(self.smtp, ssl=True)
+        server._MAXLINE = 10000000 #Allows the server to read large emails
+        server.login(self.email,self.paswd)
+        server.select_folder(folder,readOnly)
+        rawMessages = server.fetch(UIDs, ['BODY[]'])
+        addresses=[]
+        for ID in UIDs:
+            message = pyzmail.PyzMessage.factory(rawMessages[ID][b'BODY[]'])
+            addresses.append(message.get_address('from')[1])
+        return dict(zip(UIDs,addresses))
         
 
     def getTextMessagesFrom(self,sms_address,newMessagesOnly=False,returnUID=False):
@@ -205,6 +229,64 @@ class messageManager:
             return dict(zip(sms_address,UIDList))
         else:
             return dict(zip(sms_address,messageList))
+        
+    def getTextMessages(self,newMessagesOnly=False,returnUID=False):
+        """Grabs all recieved messages
+
+        Retrieves all text messsages. Only retrieves the body of the email.
+
+        Args:
+            newMessagesOnly: (optional) Only retrieve unread messages
+            returnUID: (option) Whether or not to return the UIDs
+
+        Returns:
+            Default:
+                Python Dictionary containing the sms_address and a list of messages as a pair.
+                Example
+
+                {'+12003004000@tmomail.net': ['Hello','World'], '+15006007000@tmomail.net': ['foo','bar']}
+                
+                To get the message as a list just use exampleDict[sms_address]
+
+            returnUID=True:
+                Python Dictionary containing the sms_address and a dictionary of UID: message as a pair.
+                example:
+
+                {'+12003004000@tmomail.net': {123: 'Hello', 456: 'World'}}
+        """
+        
+        #initialize the server
+        server = imapclient.IMAPClient(self.smtp, ssl=True)
+        server._MAXLINE = 10000000 #Allows the server to read large emails
+        server.login(self.email,self.paswd)
+        server.select_folder('INBOX',readonly=False)
+        
+        if newMessagesOnly:
+            UIDs = server.search(['UNSEEN'])
+        else:
+            UIDs = server.search(['ALL'])
+
+        rawMessages = server.fetch(UIDs, ['BODY[]'])
+        
+        messages={}
+        for ID in UIDs:
+            message = pyzmail.PyzMessage.factory(rawMessages[ID][b'BODY[]'])
+            address = message.get_address('from')[1]
+            if not address in messages:
+                if returnUID:
+                    messages[address] = {} #initialize
+                else:
+                    messages[address] = [] #initialize
+            for mailpart in message.mailparts:
+                if mailpart.type.startswith('text/plain'): #Grab only the plain text parts
+                    payload, used_charset=pyzmail.decode_text(mailpart.get_payload(), mailpart.charset, None)
+                    if returnUID:
+                        messages[address][ID] = payload
+                    else:
+                        messages[address].append(payload)
+        server.logout()
+        
+        return messages
 
     def sendTextMessage(self,message,sms_address,subject="I am a bot. Beep Boop."):
         """Sends text message to specified sms_address.
@@ -340,8 +422,4 @@ class messageManager:
         #initialize the server
         server = imapclient.IMAPClient(self.smtp, ssl=True)
         return server.login(self.email,self.paswd)
-
-
-
-
         
