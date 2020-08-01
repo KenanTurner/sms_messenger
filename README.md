@@ -41,7 +41,7 @@ server.sendTextMessage("Hello World!",addresses)
 
 server.sendTextMessage("This is the Body",'tmpEmail@email.com','This is the subject') #works with emails too
 
-replies = server.getTextMessages() #needs an address
+replies = server.getTextMessages()
 print(replies)
 
 server.delMessagesToSMS(addresses) #Deletes from Sent Folder
