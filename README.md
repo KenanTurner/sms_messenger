@@ -41,7 +41,7 @@ server.sendTextMessage("Hello World!",addresses)
 
 server.sendTextMessage("This is the Body",'tmpEmail@email.com','This is the subject') #works with emails too
 
-replies = server.getTextMessagesFrom('+12003004000@tmomail.net') #needs an address
+replies = server.getTextMessages() #needs an address
 print(replies)
 
 server.delMessagesToSMS(addresses) #Deletes from Sent Folder
@@ -129,6 +129,17 @@ class messageManager(builtins.object)
  |      Returns:
  |          Dictionary on success, Nothing otherwise
  |  
+ |  getAddressesFromUIDs(self, UIDs, folder, readOnly=False)
+ |      Returns the addresses from specified UIDs. 
+ |      
+ |      Args:
+ |          UIDs: List of UIDs
+ |          folder: folder from which the UIDs came
+ |          readOnly: (optional) Whether or not to mark the messages as read.
+ |      
+ |      Returns:
+ |          a dictionary containing the UID and address as a pair.
+ |  
  |  getFolders(self)
  |      Returns all the folders available.
  |      
@@ -163,6 +174,30 @@ class messageManager(builtins.object)
  |      
  |      Returns:
  |          SEARCH_KEYS
+ |  
+ |  getTextMessages(self, newMessagesOnly=False, returnUID=False)
+ |      Grabs all recieved messages
+ |      
+ |      Retrieves all text messsages. Only retrieves the body of the email.
+ |      
+ |      Args:
+ |          newMessagesOnly: (optional) Only retrieve unread messages
+ |          returnUID: (option) Whether or not to return the UIDs
+ |      
+ |      Returns:
+ |          Default:
+ |              Python Dictionary containing the sms_address and a list of messages as a pair.
+ |              Example
+ |      
+ |              {'+12003004000@tmomail.net': ['Hello','World'], '+15006007000@tmomail.net': ['foo','bar']}
+ |              
+ |              To get the message as a list just use exampleDict[sms_address]
+ |      
+ |          returnUID=True:
+ |              Python Dictionary containing the sms_address and a dictionary of UID: message as a pair.
+ |              example:
+ |      
+ |              {'+12003004000@tmomail.net': {123: 'Hello', 456: 'World'}}
  |  
  |  getTextMessagesFrom(self, sms_address, newMessagesOnly=False, returnUID=False)
  |      Grabs all messages sent by the sms address.
